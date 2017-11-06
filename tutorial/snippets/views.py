@@ -1,15 +1,20 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 
 from snippets.serializers import SnippetSerializer
 from .models import Snippet
+
 """
 snippets/urls.py에 urlpatterns작성
 config/urls.py에 snippets.urls를 include
 
 아래의 snippet_list 뷰가
     /snippets/ 에 연결되도록 url을 구성
+    
+아래의 snippet_detail뷰가
+    /snippets/<pk>/ 에 연결되도록 url 구성
+    ex) /snippets/3/
 """
 
 
@@ -39,3 +44,25 @@ def snippet_list(request):
             return JsonResponse(serializer.data, status=201)
         # 유효하지 않으면 인스턴스의 에러들을 HTTP 400 Bad request상태코드와 함께 보내줌
         return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def snippet_detail(request, pk):
+    try:
+        snippet = Snippet.objects.get(pk=pk)
+    except Snippet.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = SnippetSerializer(snippet)
+        return JsonResponse(serializer.data)
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = SnippetSerializer(snippet, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+    elif request.method == 'DELETE':
+        snippet.delete()
+        return HttpResponse(status=204)
