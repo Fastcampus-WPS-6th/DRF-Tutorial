@@ -2,8 +2,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .serializers import SnippetSerializer
-from .models import Snippet
+from ..models import Snippet
+from ..serializers import SnippetSerializer
+
+__all__ = (
+    'snippet_list',
+    'snippet_detail',
+)
 
 """
 snippets/urls.py에 urlpatterns작성
@@ -11,7 +16,7 @@ config/urls.py에 snippets.urls를 include
 
 아래의 snippet_list 뷰가
     /snippets/ 에 연결되도록 url을 구성
-    
+
 아래의 snippet_detail뷰가
     /snippets/<pk>/ 에 연결되도록 url 구성
     ex) /snippets/3/
