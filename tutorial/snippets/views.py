@@ -21,7 +21,7 @@ config/urls.py에 snippets.urls를 include
 # 이 뷰는 api_view형태로 동작함 (request에 HttpRequest가 아닌 Request가 주어짐)
 # GET, POST요청에 대해서만 동작
 @api_view(['GET', 'POST'])
-def snippet_list(request):
+def snippet_list(request, format=None):
     if request.method == 'GET':
         # snippets는 모든 Snippet의 쿼리셋
         snippets = Snippet.objects.all()
@@ -43,7 +43,7 @@ def snippet_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def snippet_detail(request, pk):
+def snippet_detail(request, pk, format=None):
     # pk에 해당하는 Snippet이 존재하는지 확인 후 snippet변수에 할당
     try:
         snippet = Snippet.objects.get(pk=pk)
