@@ -1,9 +1,9 @@
 from django.conf.urls import url, include
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 
 from ..views.cbv_viewsets import SnippetViewSet
 
-router = DefaultRouter()
+router = SimpleRouter()
 router.register(r'', SnippetViewSet)
 
 urlpatterns = [
